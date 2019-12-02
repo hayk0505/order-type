@@ -1,0 +1,1436 @@
+:root {
+  --thanksPosition: ;
+  --forPosition: ;
+  --orderPosition: ;
+}
+
+$bg-color: #fff;
+$basic-dark-color: #212121;
+$border-width: 4px;
+$basic-spinner-dimensions: calc(20px + 2vw);
+$main-spinner-dimensions: calc(((20px + 2vw) - 4px) * 2);
+$small-spinner-dimensions: calc((((20px + 2vw) - 4px) * 2) * 0.7);
+$form-placeholder-mob: calc(12px + 0.2vw);
+$form-placeholder-small-mob: calc(5px + 1vw);
+$form-placeholder-small: calc(10px + 0.3vw);
+
+input, textarea {
+  font-size: $form-placeholder-mob;
+}
+
+.borderRadius {
+  border-radius: calc(10px + 1vw);
+}
+
+.inputBorderRadius {
+  border-radius: 25px;
+}
+
+.noneBorder {
+  border: 0px solid var(--mainColorOne) !important;
+}
+
+.direction {
+  flex-direction: column;
+}
+
+.qrBorder-w {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: rgba(0,0,0,.8);
+  z-index: 15;
+  i {
+    position: absolute;
+    top: 15vh;
+    right: 15px;
+    font-size: 20px;
+    color: #fff;
+  }
+}
+
+.qrBorder-w ::ng-deep qr-scanner div {
+  height: 100%;
+  overflow: hidden;
+}
+
+.qrBorder-w ::ng-deep qr-scanner div video {
+  width: unset;
+}
+
+// border effect start
+$anime-time: 8s;
+$box-size: 280px;
+$clip-distance: .05;
+$clip-size: $box-size * (1 + $clip-distance * 2);
+$path-width: 2px;
+$main-color: var(--mainColorOne);
+
+%full-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.bb {
+  @extend %full-fill;
+  width: $box-size;
+  height: $box-size;
+  margin: auto;
+  // background: $codepen-logo-path no-repeat 50% / 70% rgba(#000, .1);
+  color: $main-color;
+  box-shadow: inset 0 0 0 1px rgba($main-color, .5);
+
+  &::before,
+  &::after {
+    @extend %full-fill;
+    content: '';
+    z-index: -1;
+    margin: -1 * $clip-distance * 100%;
+    box-shadow: inset 0 0 0 $path-width; 
+    animation: clipMe $anime-time linear infinite;
+  }
+
+  &::before {
+    animation-delay: $anime-time * -.5;
+  }
+
+  // for debug
+  &:hover {
+    &::after,
+    &::before {
+      background-color: rgba(#f00, .3);
+    }
+  }
+
+}
+
+@keyframes clipMe {
+  0%, 100% {clip: rect(0px, $clip-size, $path-width, 0px); }
+  25% {clip: rect(0px, $path-width, $clip-size, 0px); }
+  50% {clip: rect($clip-size - $path-width, $clip-size, $clip-size, 0px); }
+  75% {clip: rect(0px, $clip-size, $clip-size, $clip-size - $path-width); }
+}
+
+// border effect end
+
+canvas {
+  width: 320px !important;
+  height: 480px !important;
+}
+.qrBorder{
+  width: var(--screenWidth);
+  height: var(--screenHeight);    
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  border-top: calc(20vw + ((var(--screenHeight) - var(--screenWidth)) / 2)) solid rgba(0,0,0,0.6);
+  border-right: 20vw solid rgba(0,0,0,0.6);
+  border-bottom: calc(20vw + ((var(--screenHeight) - var(--screenWidth)) / 2)) solid rgba(0,0,0,0.6);
+  border-left: 20vw solid rgba(0,0,0,0.6);
+}
+
+.toggleWebCam{
+  width: 200px;
+  position: absolute;
+  top: 120px;
+  right: 0;
+  left: 0;
+  margin: auto;
+  line-height: 32px;
+  z-index: 1;
+}
+
+// CREDIT CARD
+.creditCard {
+  width: 45%;
+  height: 18vw;
+  max-height: 190px;
+  position: relative;
+  cursor: pointer;
+  -webkit-perspective: 600px;
+  -moz-perspective: 600px;
+  perspective: 600px;
+
+  &__part {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    position: absolute;
+    border-radius: 8px;
+    background-image: url('src/assets/images/payMethod__background.png'), linear-gradient(to right bottom, rgb(94, 177, 95), rgb(95, 182, 115), #2AA04B, rgb(25, 105, 54), #299D4B);
+    /*linear-gradient(to right bottom, #fd8369, #fc7870, #f96e78, #f56581, #ee5d8a)*/
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+    z-index: 10;
+    -webkit-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    -moz-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    -ms-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    -o-transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    box-shadow: 1px 1px #aaa3a3;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+
+    &--overlay {
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      z-index: 11;
+      transform: translateX(-100%);
+      transition: all .7s;
+
+      &Text {
+        background: #666666;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+        font-size: calc(20px + 1vw);
+        text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+      }
+
+      &SuccessIcon {
+        width: 0;
+        height: 0;
+        border: 4px solid #b3aeae;
+        border-radius: 50px;
+        background: linear-gradient(to bottom, rgba(251, 251, 251, 1) 0%, rgba(251, 251, 251, 0) 100%);
+        overflow: hidden;
+        visibility: hidden;
+        transition: all ease-in-out .3s;
+
+        i {
+          background: #666666;
+          -webkit-background-clip: text;
+          -moz-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          font-size: 30px;
+          text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.5);
+          transform: translateX(-200%);
+          transition: cubic-bezier(.58, -0.08, 0, 1.56) .3s .5s;
+        }
+      }
+
+      .SuccessIcon--active {
+        transform: translateX(0);
+      }
+
+      &SuccessIcon--active {
+        width: 4vw;
+        height: 4vw;
+        visibility: visible;
+      }
+    }
+
+    &--overlayActive {
+      transform: translateX(0);
+    }
+  }
+
+  &__front {
+    padding: calc(8px + 0.5vw);
+    transform: rotateY(0);
+    -webkit-transform: rotateY(0);
+    -moz-transform: rotateY(0);
+
+    &:hover .creditCard__part--overlay {
+      transform: translateX(0);
+    }
+  }
+
+  &__back {
+    padding: calc(8px + 0.5vw);
+    transform: rotateY(-180deg);
+    -webkit-transform: rotateY(-180deg);
+    -moz-transform: rotateY(-180deg);
+  }
+
+  &__front--active {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+  }
+
+  &__back--active {
+    transform: rotateY(0);
+    -webkit-transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+  }
+
+  &__logo {
+    height: 20%;
+    max-height: 25px;
+  }
+
+  &__front-logo {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+  }
+
+  &__square {
+    height: 20%;
+    max-height: 30px;
+    border-radius: 5px;
+  }
+
+  &_numer {
+    width: 100%;
+    display: block;
+    margin-top: 10%;
+    margin-bottom: 7%;
+    color: #fff;
+    font-size: calc(11px + 0.2vw);
+    text-align: center;
+    letter-spacing: 2px;
+    word-spacing: 4px;
+  }
+
+  &__space-75 {
+    width: 75%;
+    float: left;
+  }
+
+  &__space-25 {
+    width: 25%;
+    float: left;
+  }
+
+  &__bottom {
+    width: calc(100% - 3vw);
+    position: absolute;
+    bottom: 5%;
+  }
+
+  &__label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: calc(9px + 0.2vw);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__wrap {
+    width: 100%;
+    padding: 2%;
+  }
+
+  &__info {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #fff;
+    font-size: calc(10px + 0.2vw);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__back-content {
+    height: 100%;
+  }
+
+  &__secret--last {
+    margin: 0;
+    color: #303030;
+    font-size: 14px;
+    text-align: right;
+  }
+
+  &__secret {
+    position: relative;
+    padding: 5px 12px;
+    background-color: #fff;
+  }
+
+  &__secret:before {
+    width: calc(100% - 42px);
+    height: calc(100% + 6px);
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(45deg, #ededed, #ededed 5px, #f9f9f9 5px, #f9f9f9 10px);
+    content: '';
+  }
+
+  &__back-logo {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+  }
+
+  &__back-square {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+  }
+
+  // CASH SECTION
+
+  &__cashSection {
+    width: 100%;
+    height: 100%;
+    border: 15px solid rgba(38, 165, 83, .6);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, .6);
+  }
+
+  &__cashInner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: 5px solid rgb(255, 255, 255);
+    border-radius: $form-placeholder-small-mob;
+    background-color: rgba(0, 0, 0, .6);
+    opacity: 0.8;
+  }
+
+  &__cashContent {
+    width: 50%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, .6);
+
+    i {
+      color: #fff;
+      font-size: calc(5px + 5vw);
+    }
+  }
+
+  &__cashCorner {
+    width: calc(20px + 0.5vw);
+    height: calc(20px + 0.5vw);
+    position: absolute;
+  }
+
+  &__cashCorner--leftTop {
+    top: -5px;
+    left: -5px;
+    border-bottom-right-radius: 100%;
+    background-color: rgb(255, 255, 255);
+  }
+
+  &__cashCorner--leftBottom {
+    bottom: -5px;
+    left: -5px;
+    border-top-right-radius: 100%;
+    background-color: rgb(255, 255, 255);
+  }
+
+  &__cashCorner--bottomRight {
+    right: -5px;
+    bottom: -5px;
+    border-top-left-radius: 100%;
+    background-color: rgb(255, 255, 255);
+  }
+
+  &__cashCorner--topRight {
+    top: -5px;
+    right: -5px;
+    border-bottom-left-radius: 100%;
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+
+// CREDIT CARD END
+
+
+.choosePay__arrow {
+  width: 10%;
+  margin-bottom: 0;
+
+  i {
+    font-size: 2vw;
+  }
+}
+
+.padding__b {
+  padding-bottom: 10%;
+}
+
+div.padding__t {
+  padding-top: 15%;
+}
+
+.orderType {
+  width: 100%;
+  flex-direction: column;
+  position: relative;
+
+  &__passiveOverlayer {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    opacity: 0;
+    z-index: -1;
+    transition: all .3s;
+
+    &--active {
+      opacity: .8;
+      z-index: 11;
+      transition: all .5s;
+    }
+  }
+
+  &__container {
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    padding: 2%;
+    border: 1px solid var(--mainColorOne);
+    overflow: hidden;
+
+    &--small {
+      width: 50%;
+      transition: width .5s ease-out .5s;
+    }
+  }
+
+  &__CloseBtn {
+    width: calc(10px + 0.5vw);
+    position: absolute;
+    top: 2vw;
+    right: 2.5vw;
+    cursor: pointer;
+
+    & i {
+      color: #fff;
+      font-size: calc(12px + .3vw);
+      transform: rotate(0);
+      transition: all .3s;
+
+      &:hover {
+        transform: rotate(360deg) scale(1.2);
+        transition: all .3s;
+      }
+    }
+  }
+
+  &__Btn {
+    width: calc(40px + 0.5vw);
+    height: calc(20px + 0.5vw);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    border-radius: 10px;
+    background-color: var(--mainColorOne);
+    cursor: pointer;
+    z-index: 1;
+    transition: all .3s;
+
+    &--topLeft {
+      top: 2vw;
+      left: 2.5vw;
+
+      i {
+        color: #fff;
+      }
+    }
+  }
+
+  &__dropDownPayments {
+    justify-content: space-around;
+    text-align: center;
+  }
+
+  &__paySlideItem {
+    width: 100%;
+    margin: 5% 0;
+    &Inner {
+      width: 100%;
+    }
+  }
+  .flexStart {
+    justify-content: flex-start;
+  }
+
+  &__payChekbox {
+    width: 18%;
+    // max-width: 65px;
+    position: relative;
+    margin-right: 10px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+
+    &Text {
+      // position: absolute;
+      // top: 12%;
+      // left: 0;
+      // right: 0;
+      // margin: 0 auto;
+      margin-top: 10px;
+      margin-bottom: 0;
+      // background: #FFFFFF;
+      color: #fff;
+      font-weight: 600;
+      font-size: calc(10px + 0.2vw);
+      text-shadow: 1px 1px 0 #4074b5, 1px -1px 0 #4074b5, -1px 1px 0 #4074b5, -1px -1px 0 #4074b5, 1px 0px 0 #4074b5, 0px 1px 0 #4074b5, -1px 0px 0 #4074b5, 0px -1px 0 #4074b5;
+    }
+
+    &Child {
+      width: 100%;
+      max-width: 55px;
+      position: relative;
+      cursor: pointer;
+
+      i {
+        position: absolute;
+        right: -100%;
+        color: #000;
+        text-shadow: 1px 1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, -1px -1px 0 #fff, 1px 0px 0 #fff, 0px 1px 0 #fff, -1px 0px 0 #fff, 0px -1px 0 #fff;
+      }
+    }
+
+    &Img {
+      width: 100%;
+      max-width: 65px;
+      height: 100%;
+      border-radius: 5px;
+      transition: all .3s;
+    }
+
+    &ImgCheckbox {
+      width: 0;
+      height: 0;
+      display: block;
+      position: absolute;
+      overflow: hidden;
+      visibility: hidden;
+
+      &:checked+img {
+        opacity: 0.8;
+        transform: scale(.8);
+        transition: all .3s;
+      }
+
+      &:checked~i {
+        top: 30%;
+        right: calc(50% - 8px);
+        transition: all .3s;
+      }
+    }
+
+    &ChildImg {
+      width: 100%;
+      border-radius: 5px;
+      transition: all .3s;
+    }
+  }
+
+  .orderType__contentContainer {
+    &Inner {
+      width: 38%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin-right: 2%;
+      padding: 2%;
+
+      &Title {
+        margin-bottom: 10%;
+        background: #666666;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        font-size: calc(14px + 1.3vw);
+        text-shadow: 0px 3px 3px rgba(255, 255, 255, 0.5);
+      }
+
+      &Description {
+        font-size: $form-placeholder-mob;
+      }
+
+      &Bgc {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: var(--mainColorOne);
+        opacity: .1;
+        z-index: 0;
+      }
+    }
+  }
+
+  &__keyModal {
+    width: 50vw;
+    height: 40vh;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding: 10% 5%;
+    border: 1px solid var(--mainColorOne);
+    border-radius: 18px;
+    background-color: rgb(235, 235, 235);
+    font-weight: 700;
+    z-index: 13;
+    transform: translate(-50%, -50%);
+
+    &Congrads {
+      width: 30%;
+      margin-right: 5%;
+      font-size: 40px;
+
+      &--thanks {
+        transform: translate(calc(50% - (var(--thanksPosition) / 2)), 30%);
+      }
+
+      &--for {
+        transform: translate(calc(50% - (var(--forPosition) / 2)), 42%);
+      }
+
+      &--order {
+        transform: translate(calc(50% - (var(--orderPosition) / 2)), 53%);
+      }
+
+      svg {
+        overflow: initial;
+      }
+    }
+
+    &Message {
+      width: 70%;
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .keyModal__success {
+      position: relative;
+      margin-bottom: 10%;
+      color: #fff;
+      font-weight: 800;
+      font-size: 3vw;
+      text-align: center;
+      text-transform: uppercase;
+      text-shadow: -10px 1px 15px #ced0d3;
+      letter-spacing: -0.10em;
+      visibility: hidden;
+      user-select: none;
+    }
+  }
+
+  &__keyModalKey {
+    margin-top: 10%;
+    padding: 5px 20px;
+    border: 1px solid var(--mainColorOne);
+    background-color: #fff;
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: calc(14px + 0.3vw);
+  }
+
+  &__submitBtn {
+    width: 20%;
+    right: 0;
+    padding: 1% 2%;
+    border: none;
+    background-color: var(--mainColorOne);
+    color: #FFF;
+  }
+
+  &__nextStep {
+    width: 100%;
+
+    &Content {
+      width: 60%;
+      height: 100%;
+      flex-direction: column;
+
+      & .orderType__nextStepTitle {
+        margin-bottom: 5%;
+      }
+    }
+  }
+
+  &__paySlide {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+    overflow: hidden;
+
+    &--active {
+      height: 50vh;
+      transition: all ease-in-out .3s;
+    }
+
+    &ChooseWindow {
+      width: 100%;
+      max-width: 800px;
+      height: 40vh;
+      flex-direction: column;
+      justify-content: space-around;
+      position: relative;
+      padding: 2%;
+      padding-bottom: 0;
+      background-color: rgba(240, 240, 240, 0.8);
+      transition: width .3s;
+
+      &--active {
+        width: 100%;
+        transition: width .5s .1s;
+      }
+
+      &Content {
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+
+        &Child {
+          width: 100%;
+          flex-direction: column;
+          padding-top: 10%;
+          background-color: var(--mainColorOne);
+        }
+      }
+    }
+  }
+
+  &__form {
+    width: 100%;
+    flex-direction: column;
+
+    &Description {
+      width: 100%;
+      max-width: 500px;
+      min-width: 220px;
+      height: 180px;
+      padding: 20px 15px;
+      border: 1px solid var(--mainColorOne);
+      background-color: #FFF;
+
+      &Textarea {
+        width: 100%;
+        height: 100%;
+        border: none;
+        resize: none;
+      }
+    }
+  }
+}
+
+.deliveryForm {
+  width: 100%;
+  height: 100%;
+  padding-left: 8px;
+  border: 1px solid var(--mainColorOne);
+}
+
+.dateIcon {
+  margin-right: 3%;
+  cursor: pointer;
+}
+
+.feedback__emailSection {
+  width: 100%;
+  max-width: 500px;
+  min-width: 220px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 10px;
+
+  &CountyDropdown {
+    width: 100px;
+    height: 100%;
+    position: relative;
+
+    .login__countrySection {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: absolute;
+      margin-bottom: 4%;
+      border: 1px solid var(--mainColorOne);
+      background-color: #FFF;
+      z-index: 4;
+
+      .feedback__selectionSectionSelected {
+        width: 75%;
+        height: 100%;
+        margin-left: 15%;
+        padding: 0;
+        border: none !important;
+        background: #fff;
+        line-height: 18px;
+        box-shadow: none !important;
+      }
+
+      .feedback__selectionSectionBtn {
+        width: 13%;
+        height: 17px;
+        position: relative;
+        right: 11%;
+        float: right;
+        transform: rotate(270deg);
+      }
+    }
+  }
+
+  &InputContainer {
+    width: 100%;
+    height: 100%;
+    max-height: 50px;
+    display: flex;
+    position: absolute;
+    border: 1px solid var(--mainColorOne);
+    background-color: #FFF;
+    text-overflow: ellipsis;
+
+    .phoneNumber__input {
+      width: calc(100% - 100px);
+      margin-left: 100px;
+      padding: 0;
+      padding-left: 3px;
+      border: none !important;
+      overflow: hidden;
+      box-shadow: none;
+    }
+
+    .feedback__descriptionTitlePhone {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 110px;
+      margin-bottom: 0%;
+      font-size: $form-placeholder-mob;
+      pointer-events: none;
+      opacity: .6;
+      transition: all .5s;
+    }
+
+    .phoneNumber__input:not([value=""]):focus~.feedback__descriptionTitlePhone {
+      left: 43%;
+      opacity: 0;
+      transition: all .3s;
+    }
+
+    .phoneNumber__input:not([value=""])~.feedback__descriptionTitlePhone {
+      left: 43%;
+      opacity: 0;
+      transition: all .3s;
+    }
+  }
+
+  .mainNavigation {
+    position: absolute;
+    top: 2px;
+    padding: 44px 10px 0 10px;
+    border: 1px solid var(--mainColorOne);
+    background-color: #F7F7F7;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: none;
+
+    .burger__content {
+      width: 104%;
+      height: 175px;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      margin-right: -26px;
+      overflow: scroll;
+
+      span {
+        padding: 1%;
+        padding-left: 0;
+      }
+
+      ul {
+        padding-top: 10px;
+        padding-left: 0;
+        text-align: start;
+        list-style-type: none;
+
+        .burger__contentItems {
+          max-height: 20px;
+          line-height: 20px;
+          cursor: pointer;
+
+          &:hover {
+            width: 90%;
+            border-bottom: 1px solid #999;
+          }
+        }
+      }
+    }
+  }
+
+  .loginMainNavigation::-webkit-scrollbar {
+    width: 0;
+  }
+
+  .mainNavigationActive {
+    max-height: 200px;
+    box-shadow: 5px 2px 6px rgba(0, 0, 0, .2);
+  }
+
+  .mainNavigationActive--edit {
+    max-height: 360px;
+    transition: all .3s;
+
+    .burger__content {
+      height: 330px !important;
+      transition: all .3s;
+    }
+  }
+
+  .forLeft {
+    height: 60%;
+    left: 2% !important;
+    margin-left: 1%;
+  }
+}
+
+.tab-slider--nav {
+  width: 100%;
+  margin-bottom: 20px;
+
+  .tab-slider--tabs {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 1%;
+    border-bottom: 1px solid var(--mainColorOne);
+    background: #fff;
+
+    .tab-slider--trigger {
+      display: inline-block;
+      position: relative;
+      padding: 1% 2%;
+      color: #345F90;
+      font-weight: bold;
+      font-size: $form-placeholder-small;
+      line-height: 1;
+      text-align: center;
+      text-transform: uppercase;
+      cursor: pointer;
+      z-index: 2;
+      -webkit-transition: color 250ms ease-in-out;
+      transition: color 250ms ease-in-out;
+    }
+
+    .tab-slider--trigger.active {
+      background-color: var(--mainColorOne);
+      color: #fff;
+      -webkit-transition: all 250ms ease-in-out;
+      transition: all 250ms ease-in-out;
+    }
+  }
+}
+
+.tab-slider--container {
+  width: 100%;
+}
+
+.orderType__spinner {
+  width: $basic-spinner-dimensions;
+  height: $basic-spinner-dimensions;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: all .3s;
+
+  &--active {
+    opacity: 1;
+    z-index: 11;
+    transition: all .5s;
+  }
+
+  &:before,
+  &:after {
+    display: block;
+    position: absolute;
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 50%;
+    content: "";
+  }
+}
+
+.orderType__spinner.spinner-1 {
+  @keyframes rotate-animation {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes anti-rotate-animation {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(-360deg);
+    }
+  }
+
+  &:before {
+    width: $main-spinner-dimensions;
+    height: $main-spinner-dimensions;
+    top: 0px;
+    left: 0px;
+    border-top-color: rgba($basic-dark-color, 0);
+    border-right-color: var(--mainColorOne);
+    border-bottom-color: var(--mainColorOne);
+    border-left-color: rgba($basic-dark-color, 0);
+    opacity: .8;
+    animation: rotate-animation 1s linear 0s infinite;
+  }
+
+  &:after {
+    width: $small-spinner-dimensions;
+    height: $small-spinner-dimensions;
+    top: ($main-spinner-dimensions - $small-spinner-dimensions) / 2;
+    top: calc(((((20px + 2vw) - 4px) * 2) - ((((20px + 2vw) - 4px) * 2) * 0.7)) / 2);
+    left: calc(((((20px + 2vw) - 4px) * 2) - ((((20px + 2vw) - 4px) * 2) * 0.7)) / 2);
+    border-top-color: rgba($basic-dark-color, 0);
+    border-right-color: var(--mainColorOne);
+    border-bottom-color: var(--mainColorOne);
+    border-left-color: rgba($basic-dark-color, 0);
+    opacity: .6;
+    animation: anti-rotate-animation 0.85s linear 0s infinite;
+  }
+}
+
+.singlePayMethod {
+  max-width: 400px;
+}
+
+.singlePayWidth {
+  width: 100%;
+}
+
+
+
+// ====================================================================================================================================
+
+// <-------MOBILE STYLES START-------->
+
+// ====================================================================================================================================
+
+
+
+
+@media only screen and (min-width: 992px) {
+  .creditCard__cashContent i {
+    font-size: 65px;
+  }
+
+  .choosePay__arrow i {
+    font-size: 30px;
+  }
+
+  .orderType__keyModal {
+    padding: 25px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .signUp__error {
+    background: #fff;
+  }
+}
+
+@media only screen and (max-width: 630px) {
+  div .orderType__paySlideChooseWindow {
+    width: 100%;
+    padding: 8% !important;
+  }
+
+  div .creditCard_numer {
+    font-size: 4.5vw;
+  }
+
+  div .creditCard {
+    width: 70vw;
+    max-width: unset;
+    height: 41vw;
+    max-height: unset;
+  }
+
+  div .orderType__payChekbox {
+    &Child {
+      width: 100%;
+      max-width: unset;
+    }
+  }
+  div .tab-slider--trigger {
+    padding: 7% 0 !important;
+    font-size: calc(8px + 1vw) !important;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .tab-slider--nav {
+    width: 100%;
+    margin-bottom: 20px;
+
+    .tab-slider--tabs {
+      display: grid;
+      padding-bottom: 5%;
+      text-align: center;
+      grid-row-gap: 4%;
+      grid-template-columns: 50% 50%;
+
+      .tab-slider--trigger {
+        padding: 5% 0;
+        font-size: calc(6px + 1vw);
+      }
+    }
+  }
+
+  .qrBtn {
+    width: 100%;
+    margin-top: 5%;
+    padding: 2% 0;
+    border: 1px solid var(--mainColorOne);
+    font-weight: 600;
+    font-size: $form-placeholder-mob;
+  }
+
+  .tab-slider--body {
+    margin-bottom: 20px;
+  }
+
+  .orderType {
+    width: unset;
+    height: unset;
+    position: relative;
+    padding: 5%;
+    padding-bottom: 0;
+
+    &__title {
+      width: 100%;
+      display: block;
+      font-weight: 600;
+      font-size: calc(16px + 0.3vw);
+      text-align: center;
+    }
+
+    &__title--edit {
+      height: 0;
+      transition: all .3s .5s;
+    }
+
+    &__CloseBtn {
+      right: 2.5vw;
+    }
+
+    &__nextStepContent {
+      width: 100%;
+    }
+
+    &__spinner--active {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 13;
+      transform: translate(-50%, -50%);
+    }
+
+    &__submitBtn {
+      width: 22%;
+      font-size: $form-placeholder-mob;
+    }
+
+    &__passiveOverlayer {
+      width: 100vw;
+      height: 100vh;
+
+      &--active {
+        z-index: 12;
+      }
+    }
+
+    &__keyModal {
+      width: 70%;
+    }
+
+    &__form {
+      &Description {
+        height: 120px;
+
+        & textarea {
+          font-size: $form-placeholder-mob;
+        }
+      }
+    }
+
+    .mainNavigation {
+      padding: 35px 10px 0 10px;
+
+      .burger__contentItems {
+        font-size: $form-placeholder-mob;
+      }
+    }
+  }
+
+  .feedback__emailSection {
+    height: 40px;
+
+    &InputContainer {
+      max-height: 40px;
+      font-size: $form-placeholder-mob;
+    }
+
+    .feedback__selectionSectionSelected {
+      font-size: $form-placeholder-mob;
+    }
+  }
+
+  .orderType__contentContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 5%;
+    border: 1px solid var(--mainColorOne);
+    background-color: rgb(245, 245, 245);
+    overflow: hidden;
+    z-index: 2;
+    transition: all .3s;
+    box-shadow: 8px 7px 12px -6px rgba(0, 0, 0, 0.4);
+
+    &Inner {
+      width: 100% !important;
+      margin-bottom: 5%;
+
+      &Title {
+        font-size: calc(14px + .3vw);
+      }
+
+      &Description {
+        font-size: $form-placeholder-mob;
+      }
+    }
+  }
+
+  .orderType__paySlide {
+    &ChooseWindow {
+      width: 60%;
+      height: 100%;
+
+      &--active {
+        width: 100%;
+        transition: width .5s .1s;
+      }
+
+      &Content {
+        &Child {
+          background-color: transparent;
+          font-weight: 600;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .choosePay__arrow {
+    width: 100%;
+    margin-bottom: 0;
+
+    i {
+      font-size: 3vw;
+      transform: rotate(90deg);
+    }
+  }
+
+  .creditCard {
+    width: 45vw;
+    max-width: 320px;
+    height: 27vw;
+    max-height: 190px;
+
+    &__part {
+      &--overlay {
+        &SuccessIcon {
+          border: 3px solid #b3aeae;
+
+          i {
+            font-size: 14px;
+          }
+        }
+
+        &SuccessIcon--active {
+          width: 35px;
+          height: 35px;
+        }
+
+      }
+    }
+
+    &_numer {
+      font-size: 2.6vw;
+    }
+
+    &__bottom {
+      width: 100%;
+    }
+
+    &__cashSection {
+      border: 3vw solid rgba(38, 165, 83, 0.6);
+      border-radius: $form-placeholder-small-mob;
+    }
+
+    &__cashCorner {
+      width: 5vw;
+      height: 5vw;
+    }
+
+    &__cashContent {
+      font-size: 10vw;
+    }
+
+    &__info {
+      line-height: 3vw;
+    }
+  }
+}

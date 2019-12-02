@@ -1,0 +1,996 @@
+<!-- desktop -->
+<section *ngIf="!isMob" class="orderType d_flex__center">
+  <div class="orderType__container borderRadius d_flex__vertical">
+    <div class="orderType__passiveOverlayer" [ngClass]="{'orderType__passiveOverlayer--active': loader}"></div>
+    <div class="tab-slider--nav">
+      <ul class="tab-slider--tabs">
+        <li *ngIf="partnerInfo.allowPickup" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode == 'tab1'" rel="tab1"
+          (click)="tabSubmit('pickUp', 'tab1')">
+          {{'pickUp' | lazytranslate}}
+        </li>
+        <li *ngIf="partnerInfo.allowDelivery" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode == 'tab2'" rel="tab2"
+          (click)="tabSubmit('delivery', 'tab2')">
+          {{'delivery' | lazytranslate}}
+        </li>
+        <li *ngIf="partnerInfo.allowReservation" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode == 'tab3'" rel="tab3"
+          (click)="tabSubmit('reservation', 'tab3')">
+          {{'reservation' | lazytranslate}}
+        </li>
+      </ul>
+    </div>
+    <div class="tab-slider--container" [ngSwitch]="viewMode">
+
+      <!-- PICKUP-DESKTOP -->
+
+      <div [@setHeight]="btnHeightActive ? 'show' : 'void'" id="tab1" class="tab-slider--body" *ngSwitchCase="'tab1'">
+        <div class="orderType__contentContainer borderRadius d_flex__between">
+          <div class="orderType__contentContainerInner">
+            <div class="orderType__contentContainerInnerBgc inputBorderRadius"></div>
+            <span class="orderType__contentContainerInnerTitle z_3">{{'pickUp' | lazytranslate}}</span>
+            <span class="orderType__contentContainerInnerDescription z_3">{{'pickUpForFront' | lazytranslate}}</span>
+          </div>
+          <div class="orderType__nextStepContent">
+            <div id="pickUpWrapper" class="orderType__form d_flex__center">
+              <div class="feedback__emailSection feedback__emailSectionDropdown">
+                <div class="feedback__emailSectionCountyDropdown" (clickOutside)="closegroupContainer()">
+                  <button type="button" class="login__countrySection inputBorderRadius" (click)="clicked()">
+                    <input (focus)="closeClick()" [(ngModel)]="checkoutPickUp.contryCode" class="feedback__selectionSectionSelected" disabled
+                      autofocus>
+                    <img class="feedback__selectionSectionBtn" src="assets/images/image/back-icon.svg">
+                  </button>
+                </div>
+                <div class="feedback__emailSectionInputContainer inputBorderRadius z_3">
+                  <input (focus)="closeClick()" required class="phoneNumber__input" type="number"
+                    placeholder="{{'basePhone' | lazytranslate}}" (keyup)="checkInputValue('pickUpWrapper')"
+                    [(ngModel)]="checkoutPickUp.phone"
+                    oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{25})|[^\d]/g, '');">
+                  <div class="invalid-feedback signUp__error">
+                    <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                  </div>
+                </div>
+                <nav id="loginMainNavigation" class="mainNavigation inputBorderRadius z_2"
+                  [ngClass]="{'mainNavigationActive' : groupContainerState}">
+                  <div class="burger__content">
+                    <ul *ngIf="countryCodes">
+                      <li id="countryCode" *ngFor="let country of countryCodes.data.countries.items"
+                        (click)="activeCode(country.callingCode[0])" class="burger__contentItems"><a><span class="">
+                            {{country.name.common}}</span><span>(+{{country.callingCode[0]}})</span></a></li>
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+              <div class="inputBorderRadius relative feedback__emailSection">
+                <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                  placeholder="{{'name' | lazytranslate}}" (keyup)="checkInputValue('pickUpWrapper')"
+                  [(ngModel)]="checkoutPickUp.name">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="inputBorderRadius relative feedback__emailSection">
+                <input (focus)="closeClick()" #pickUpEmail required type="email" class="deliveryForm inputBorderRadius" maxlength="50"
+                  placeholder="{{'email' | lazytranslate}}" (keyup)="checkInputValue('pickUpWrapper')"
+                  [(ngModel)]="checkoutPickUp.contactEmail">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div *ngIf="inputValue === '' && !this.mailValidate(pickUpEmail)" style="color: red">{{ 'required' | lazytranslate }}</div>
+                  <div *ngIf="inputValue !== '' && !this.mailValidate(pickUpEmail)" style="color: red">{{ 'enterValidEmail' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="orderType__formDescription inputBorderRadius">
+                <textarea (focus)="closeClick()" class="orderType__formDescriptionTextarea" maxlength="200" placeholder="{{'specialinstractions' | lazytranslate}}"
+                  [(ngModel)]="checkoutPickUp.note">
+                </textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELIVERY-DESKTOP -->
+
+      <div [@setHeight]="btnHeightActive ? 'show' : 'void'" id="tab2" class="tab-slider--body" *ngSwitchCase="'tab2'">
+        <div class="orderType__contentContainer borderRadius d_flex__between">
+          <div class="orderType__contentContainerInner">
+            <div class="orderType__contentContainerInnerBgc inputBorderRadius"></div>
+            <span class="orderType__contentContainerInnerTitle z_3">{{'delivery' | lazytranslate}}</span>
+            <span class="orderType__contentContainerInnerDescription z_3">{{'deliveryForFront' | lazytranslate}}</span>
+          </div>
+          <div id="deliveryWrapper" class="orderType__nextStepContent">
+            <div class="orderType__form d_flex__center">
+              <div class="feedback__emailSection feedback__emailSectionDropdown">
+                <div class="feedback__emailSectionCountyDropdown" (clickOutside)="closegroupContainer()">
+                  <button type="button" class="login__countrySection inputBorderRadius" (click)="clicked()">
+                    <input (focus)="closeClick()" [(ngModel)]="checkoutPickUp.contryCode" class="feedback__selectionSectionSelected" disabled autofocus>
+                    <img class="feedback__selectionSectionBtn" src="assets/images/image/back-icon.svg">
+                  </button>
+                </div>
+                <div class="feedback__emailSectionInputContainer inputBorderRadius z_3">
+                  <input (focus)="closeClick()" required class="phoneNumber__input" type="number"
+                    placeholder="{{'basePhone' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                    [(ngModel)]="checkoutDelivery.phone"
+                    oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{25})|[^\d]/g, '');">
+                  <div class="invalid-feedback signUp__error phoneNumber">
+                    <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                  </div>
+                </div>
+                <nav id="loginMainNavigation" class="mainNavigation inputBorderRadius z_2"
+                  [ngClass]="{'mainNavigationActive' : groupContainerState}">
+                  <div class="burger__content">
+                    <ul *ngIf="countryCodes">
+                      <li id="countryCode" *ngFor="let country of countryCodes.data.countries.items"
+                        (click)="activeCode(country.callingCode[0])" class="burger__contentItems"><a><span class="">
+                            {{country.name.common}}</span><span>(+{{country.callingCode[0]}})</span></a></li>
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+              <div class="inputBorderRadius relative feedback__emailSection">
+                <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                  placeholder="{{'name' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                  [(ngModel)]="checkoutDelivery.name">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="inputBorderRadius relative feedback__emailSection">
+                <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                  placeholder="{{'state' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                  [(ngModel)]="checkoutDelivery.state">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="inputBorderRadius relative feedback__emailSection">
+                <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                  placeholder="{{'city' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                  [(ngModel)]="checkoutDelivery.city">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="inputBorderRadius relative feedback__emailSection">
+                <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                  placeholder="{{'street' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                  [(ngModel)]="checkoutDelivery.street">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="feedback__emailSection feedback__emailSectionDropdown">
+                <div class="feedback__emailSectionInputContainer inputBorderRadius z_3 d_flex__vertical">
+                  <input (focus)="closeClick()" required class="phoneNumber__input forLeft" type="number"
+                    placeholder="{{'zipCode' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                    [(ngModel)]="checkoutDelivery.zipCode"
+                    oninput="this.value = this.value.replace(/^[+]?\d*[0-9]{5}([- /]?[0-9]{4})?$/g, '');">
+                  <div class="invalid-feedback signUp__error phoneNumber">
+                    <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="inputBorderRadius email-field-w relative feedback__emailSection">
+                <input (focus)="closeClick()" required #deliveryEmail class="deliveryForm inputBorderRadius" type="email" maxlength="50"
+                  placeholder="{{'email' | lazytranslate}}"
+                  (keyup)="checkInputValue('deliveryWrapper')" [(ngModel)]="checkoutDelivery.contactEmail" />
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div *ngIf="inputValue === '' && !this.mailValidate(deliveryEmail)" style="color: red">{{ 'required' | lazytranslate }}</div>
+                  <div *ngIf="inputValue !== '' && !this.mailValidate(deliveryEmail)" style="color: red">{{ 'enterValidEmail' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="orderType__formDescription inputBorderRadius">
+                <textarea (focus)="closeClick()" class="orderType__formDescriptionTextarea" maxlength="200" placeholder="{{'specialinstractions' | lazytranslate}}"
+                  [(ngModel)]="checkoutDelivery.note">
+                </textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESERVATION-DESKTOP -->
+
+      <div [@setHeight]="btnHeightActive ? 'show' : 'void'" id="tab3" class="tab-slider--body" *ngSwitchCase="'tab3'">
+        <div class="orderType__contentContainer borderRadius d_flex__between">
+          <div class="orderType__contentContainerInner">
+            <div class="orderType__contentContainerInnerBgc inputBorderRadius"></div>
+            <span class="orderType__contentContainerInnerTitle z_3">{{'reservation' | lazytranslate}}</span>
+            <span class="orderType__contentContainerInnerDescription z_3">{{'reservationForFront' | lazytranslate}}</span>
+          </div>
+          <div id="reservationWrapper" class="orderType__nextStepContent d_flex__vertical">
+            <div class="orderType__form d_flex__center">
+              <div class="feedback__emailSection feedback__emailSectionDropdown">
+                <div class="feedback__emailSectionCountyDropdown" (clickOutside)="closegroupContainer()">
+                  <button type="button" class="login__countrySection inputBorderRadius" (click)="clicked()">
+                    <input (focus)="closeClick()" class="feedback__selectionSectionSelected" disabled autofocus
+                      [(ngModel)]="checkoutReservation.contryCode">
+                    <img class="feedback__selectionSectionBtn" src="assets/images/image/back-icon.svg">
+                  </button>
+                </div>
+                <div class="feedback__emailSectionInputContainer inputBorderRadius z_3">
+                  <input (focus)="closeClick()" required class="phoneNumber__input" type="number"
+                    placeholder="{{'basePhone' | lazytranslate}}" (keyup)="checkInputValue('reservationWrapper')"
+                    [(ngModel)]="checkoutReservation.phone"
+                    oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{25})|[^\d]/g, '');">
+                  <div class="invalid-feedback signUp__error phoneNumber">
+                    <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                  </div>
+                </div>
+                <nav id="loginMainNavigation" class="mainNavigation inputBorderRadius z_2"
+                  [ngClass]="{'mainNavigationActive' : groupContainerState}">
+                  <div class="burger__content">
+                    <ul *ngIf="countryCodes">
+                      <li id="countryCode" *ngFor="let country of countryCodes.data.countries.items"
+                        (click)="activeCode(country.callingCode[0])" class="burger__contentItems"><a><span class="">
+                            {{country.name.common}}</span><span>(+{{country.callingCode[0]}})</span></a></li>
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+              <div class="inputBorderRadius relative feedback__emailSection">
+                <input (focus)="closeClick()" required type="text" class="deliveryForm inputBorderRadius" maxlength="50"
+                  placeholder="{{'name' | lazytranslate}}" (keyup)="checkInputValue('reservationWrapper')"
+                  [(ngModel)]="checkoutReservation.name">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="inputBorderRadius email-field-w relative feedback__emailSection">
+                <input (focus)="closeClick()"
+                required
+                #reservationEmail
+                class="deliveryForm inputBorderRadius" 
+                type="email"
+                maxlength="50"
+                placeholder="{{'email' | lazytranslate}}"
+                (keyup)="checkInputValue('reservationWrapper')"
+                [(ngModel)]="checkoutReservation.contactEmail"/>
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div *ngIf="inputValue === '' && !this.mailValidate(reservationEmail)" style="color: red">{{ 'required' | lazytranslate }}</div>
+                  <div *ngIf="inputValue !== '' && !this.mailValidate(reservationEmail)" style="color: red">{{ 'enterValidEmail' | lazytranslate }}</div>
+                </div>
+              </div>
+              <div class="feedback__emailSection feedback__emailSectionDropdown">
+                <div
+                  class="feedback__emailSectionInputContainer inputBorderRadius d_flex__between d_flex__vertical">
+                  <input (focus)="closeClick()" [min]="startAt" [max]="endAt" required readonly="readonley" class="phoneNumber__input forLeft" placeholder="{{'reservationDate' | lazytranslate}}" [owlDateTime]="dt1"
+                    [(ngModel)]="checkoutReservation.date" (ngModelChange)="checkInputValue('reservationWrapper')">
+                  <div class="invalid-feedback signUp__error phoneNumber">
+                    <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                  </div>
+                  <span class="dateIcon" [owlDateTimeTrigger]="dt1"><i class="fa fa-calendar"></i></span>
+                  <owl-date-time style="display: none" #dt1></owl-date-time>
+                </div>
+              </div>
+              <div class="feedback__emailSection feedback__emailSectionDropdown">
+                <div class="feedback__emailSectionInputContainer inputBorderRadius z_3 d_flex__vertical">
+                  <input (focus)="closeClick()" required class="phoneNumber__input forLeft" type="number"
+                    placeholder="{{'countPeople' | lazytranslate}}" (keyup)="checkInputValue('reservationWrapper')"
+                    [(ngModel)]="checkoutReservation.guestCount"
+                    oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{3})|[^\d]/g, '');">
+                  <div class="invalid-feedback signUp__error phoneNumber">
+                    <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="orderType__formDescription inputBorderRadius">
+                <textarea (focus)="closeClick()" class="orderType__formDescriptionTextarea" maxlength="200" placeholder="{{'specialinstractions' | lazytranslate}}"
+                  [(ngModel)]="checkoutReservation.note">
+                </textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- LOADER-DESKTOP -->
+
+  <div class="orderType__passiveOverlayer" [ngClass]="{'orderType__passiveOverlayer--active': loader}"></div>
+  <div class="orderType__spinner spinner-1" [ngClass]="{'orderType__spinner--active': loader}"></div>
+
+
+  <!-- PAYSLIDE-DESKTOP -->
+
+
+  <div  [@setHeight]="paySlide ? 'show' : 'void'" *ngIf="paySlide" class="orderType__paySlide orderType__nextStep">
+    <div [@setHeight]="paySlide ? 'show' : 'void'" class="orderType__paySlideChooseWindow borderRadius d_flex__vertical"
+      [ngClass]="{'orderType__paySlideChooseWindow--active': payClick, 'singlePayMethod' : !(allowPayCash() && allowPayOnline())}">
+      <div class="orderType__Btn orderType__CloseBtn" (click)="closeClick()"title="modal_close_button">
+          <i class="fas fa-times"></i>
+      </div>
+      <div *ngIf="paySlide" class="orderType__paySlide orderType__nextStep">
+        <div class="creditCard__wrap borderRadius d_flex">
+          <div *ngIf="payClick" (click)="backClick()" class="orderType__Btn orderType__Btn--topLeft">
+            <i class="fas fa-arrow-alt-circle-left"></i>
+          </div>
+
+          <!-- CREDIT CARD -->
+
+          <div *ngIf="allowPayOnline()" (click)="payOnline()" class="creditCard d_flex__center" [ngClass]="{'singlePayWidth' : !allowPayCash()}">
+            <div id="cardFront" class="creditCard__part creditCard__front" [ngClass]="{'creditCard__front--active': payClick}">
+              <img class="creditCard__front-square creditCard__square"
+                src="../../../assets/images/card/little_square.png">
+              <img class="creditCard__front-logo creditCard__logo"
+                src="../../../assets/images/card/visa.png">
+              <p class="creditCard_numer">**** **** **** 6258</p>
+              <div class="creditCard__bottom">
+                <div class="creditCard__space-75">
+                  <span class="creditCard__label">card holder</span>
+                  <p class="creditCard__info">{{setCardHoldarName()}}</p>
+                </div>
+                <div class="creditCard__space-25">
+                  <span class="creditCard__label">Expires</span>
+                  <p class="creditCard__info">10/25</p>
+                </div>
+              </div>
+              <div class="creditCard__part--overlay d_flex__center" 
+              [ngClass]="{'creditCard__part--overlayActive': payOnlineTriggerClick && !payClick}">
+                <span class="creditCard__part--overlayText">Pay Online</span>
+                <span class="creditCard__part--overlaySuccessIcon d_flex__center" 
+                    [ngClass]="{'creditCard__part--overlaySuccessIcon--active' : payOnlineTriggerClick}">
+                    <i [ngClass]="{'SuccessIcon--active' : payOnlineTriggerClick}" class="fas fa-check"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="creditCard__part creditCard__back" [ngClass]="{'creditCard__back--active': payClick}">
+              <div class="creditCard__back-content">
+                <div *ngIf="payClick" class="orderType__paySlideChooseWindowContent d_flex">
+                  <span *ngFor="let paymentMethod of paymentMethods" class="orderType__paySlideItem d_flex__horizonal">
+                    <div *ngIf="paymentMethod.paymentReadModels.length > 1" class="orderType__paySlideItemInner">
+                      <div [hidden]="paymentMethod.paymentSystem === 'yandexcashbox'" class="orderType__payChekbox">
+                        <img class="orderType__payChekboxImg" src="{{paymentMethod.pictureUri}}">
+                        <p class="orderType__payChekboxText">{{paymentMethod.paymentSystem | uppercase}}</p>
+                      </div>
+                      <div class="orderType__dropDownPayments d_flex orderType__dropDownPayments--center">
+                        <div *ngFor="let paymentReadModels of paymentMethod.paymentReadModels let y = index" 
+                          [hidden]="paymentMethod.paymentReadModels.length < 2"
+                          class="orderType__payChekbox d_flex__vertical direction">
+                          <label class="orderType__payChekboxChild">
+                            <input (focus)="closeClick()" class="orderType__payChekboxImgCheckbox" name="payMethod" id="{{y}}" type="radio">
+                            <img class="orderType__payChekboxChildImg" src="{{paymentReadModels.pictureUri}}"
+                            (click)="chekedPaymMethod(paymentReadModels.paymentMethod, paymentMethod.paymentSystem)" />
+                            <i class="fas fa-check"></i>
+                            <p class="orderType__payChekboxText">{{paymentReadModels.paymentMethod}}</p>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="paymentMethod.paymentReadModels.length <= 1" class="orderType__paySlideItemInner">
+                      <div class="orderType__dropDownPayments d_flex flexStart">
+                        <div *ngFor="let paymentReadModels of paymentMethod.paymentReadModels; let i = index"
+                          class="orderType__payChekbox">
+                        <label class="orderType__payChekboxChild">
+                          <input (focus)="closeClick()" class="orderType__payChekboxImgCheckbox" name="payMethod" id="{{i}}" type="radio">
+                          <img class="orderType__payChekboxImg" src="{{paymentReadModels.pictureUri}}"
+                          (click)="chekedPaymMethod(paymentReadModels.paymentMethod, paymentMethod.paymentSystem)" />
+                          <i class="fas fa-check"></i>
+                          <p class="orderType__payChekboxText">{{paymentMethod.paymentSystem | uppercase}}</p>
+                        </label>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- CREDIT CARD -->
+
+
+          <p *ngIf="allowPayCash() && allowPayOnline()" class="choosePay__arrow d_flex__center"><i class="fas fa-exchange-alt"></i></p>
+
+
+          <!-- CASH CARD -->
+
+
+          <div *ngIf="allowPayCash()" (click)="payCash()" class="creditCard" [ngClass]="{'singlePayWidth' : !allowPayOnline()}">
+            <div class="creditCard__front creditCard__part">
+              <div class="creditCard__cashSection">
+                <div class="creditCard__cashInner d_flex__center">
+                  <span class="creditCard__cashCorner creditCard__cashCorner--leftTop"></span>
+                  <span class="creditCard__cashCorner creditCard__cashCorner--leftBottom"></span>
+                  <span class="creditCard__cashCorner creditCard__cashCorner--bottomRight"></span>
+                  <span class="creditCard__cashCorner creditCard__cashCorner--topRight"></span>
+                  <span class="creditCard__cashContent d_flex__center">
+                    <i class="fas fa-dollar-sign"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="creditCard__part--overlay d_flex__center"
+                  [ngClass]="{'creditCard__part--overlayActive': payCashTriggerClick}">
+                <span class="creditCard__part--overlayText">Pay Cash</span>
+                <span 
+                    class="creditCard__part--overlaySuccessIcon d_flex__center" 
+                    [ngClass]="{'creditCard__part--overlaySuccessIcon--active' : payCashTriggerClick}">
+                    <i [ngClass]="{'SuccessIcon--active' : payCashTriggerClick}" class="fas fa-check"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOBILE-START -->
+
+<section *ngIf="isMob" class="orderType">
+  <div class="tab-slider--nav">
+    <ul class="tab-slider--tabs">
+      <li *ngIf="partnerInfo.allowDirect" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode === 'tab1'" rel="tab1"
+      (click)="tabSubmit('portion', 'tab1')">
+      {{'activeOrder' | lazytranslate}}
+      </li>
+      <li *ngIf="partnerInfo.allowPickup" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode === 'tab2'" rel="tab2"
+        (click)="tabSubmit('pickUp', 'tab2')">
+        {{'pickUp' | lazytranslate}}
+      </li>
+      <li *ngIf="partnerInfo.allowDelivery" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode === 'tab3'" rel="tab3"
+        (click)="tabSubmit('delivery', 'tab3')">
+        {{'delivery' | lazytranslate}}
+      </li>
+      <li *ngIf="partnerInfo.allowReservation" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode === 'tab4'" rel="tab4"
+        (click)="tabSubmit('reservation', 'tab4')">
+        {{'reservation' | lazytranslate}}
+      </li>
+      <li *ngIf="partnerInfo.allowUniqQr" class="tab-slider--trigger inputBorderRadius" [class.active]="viewMode === 'tab5'" rel="tab5"
+        (click)="tabSubmit('uniqueqr', 'tab5')">
+        {{'uniqueQR' | lazytranslate}}
+      </li>
+    </ul>
+  </div>
+  <div class="tab-slider--container" [ngSwitch]="viewMode">
+
+
+    <!-- PORTION-MOBILE -->
+
+
+    <div [@setHeight]="btnHeightActive ? 'show' : 'hide'" id="tab1" class="tab-slider--body" *ngSwitchCase="'tab1'">
+      <button class="orderType__contentContainer borderRadius d_flex__between d_flex__vertical">
+        <div class="orderType__contentContainerInner">
+          <span class="orderType__contentContainerInnerTitle z_3">{{'activeOrder' | lazytranslate}}</span>
+          <span class="orderType__contentContainerInnerDescription z_3">{{'directSellingForFront' | lazytranslate}}</span>
+            <button class="qrBtn borderRadius" (click)="scanForMe('activeOrder')">Scan for QR</button>
+        </div>
+      </button>
+    </div>
+
+
+    <!-- PICKUP-MOBILE -->
+
+
+    <div [@setHeight]="btnHeightActive ? 'show' : 'hide'" id="tab2" class="tab-slider--body" *ngSwitchCase="'tab2'">
+      <button class="orderType__contentContainer borderRadius d_flex__between d_flex__vertical">
+        <div class="orderType__contentContainerInner">
+          <span class="orderType__contentContainerInnerTitle z_3">{{'pickUp' | lazytranslate}}</span>
+          <span class="orderType__contentContainerInnerDescription z_3">{{'pickUpForFront' | lazytranslate}}</span>
+        </div>
+        <div id="pickUpWrapper" class="orderType__nextStepContent">
+          <div class="orderType__form d_flex__center">
+            <div class="feedback__emailSection feedback__emailSectionDropdown">
+              <div class="feedback__emailSectionCountyDropdown" (clickOutside)="closegroupContainer()">
+                <button class="login__countrySection inputBorderRadius" type="button" (click)="clicked()">
+                  <input (focus)="closeClick()" [(ngModel)]="checkoutPickUp.contryCode" class="feedback__selectionSectionSelected" disabled
+                    autofocus>
+                  <img class="feedback__selectionSectionBtn" src="assets/images/image/back-icon.svg">
+                </button>
+              </div>
+              <div class="feedback__emailSectionInputContainer inputBorderRadius z_3">
+                <input (focus)="closeClick()" required class="phoneNumber__input" type="number"
+                  placeholder="{{'basePhone' | lazytranslate }}" [(ngModel)]="checkoutPickUp.phone"
+                  (keyup)="checkInputValue('pickUpWrapper')"
+                  oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{25})|[^\d]/g, '');">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <nav id="loginMainNavigation" class="mainNavigation inputBorderRadius z_2"
+                [ngClass]="{'mainNavigationActive' : groupContainerState}">
+                <div class="burger__content">
+                  <ul *ngIf="countryCodes">
+                    <li id="countryCode" *ngFor="let country of countryCodes.data.countries.items"
+                      (click)="activeCode(country.callingCode[0])" class="burger__contentItems"><a><span class="">
+                          {{country.name.common}}</span><span>(+{{country.callingCode[0]}})</span></a></li>
+                  </ul>
+                </div>
+              </nav>
+            </div>
+            <div class="relative inputBorderRadius feedback__emailSection">
+              <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                placeholder="{{'name' | lazytranslate}}" [(ngModel)]="checkoutPickUp.name"
+                (keyup)="checkInputValue('pickUpWrapper')">
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div style="color: red">{{ 'required' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="relative inputBorderRadius feedback__emailSection">
+              <input (focus)="closeClick()" #pickUpEmail required class="deliveryForm inputBorderRadius" type="email" maxlength="50"
+                placeholder="{{'email' | lazytranslate}}" [(ngModel)]="checkoutPickUp.contactEmail"
+                (keyup)="checkInputValue('pickUpWrapper')">
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div *ngIf="inputValue === '' && !this.mailValidate(pickUpEmail)" style="color: red">{{ 'required' | lazytranslate }}</div>
+                <div *ngIf="inputValue !== '' && !this.mailValidate(pickUpEmail)" style="color: red">{{ 'enterValidEmail' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="orderType__formDescription inputBorderRadius">
+              <textarea (focus)="closeClick()" placeholder="{{'specialinstractions' | lazytranslate}}" class="orderType__formDescriptionTextarea" maxlength="200" [(ngModel)]="checkoutPickUp.note">
+              </textarea>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+
+    <!-- DELIVERY-MOBILE -->
+
+
+    <div [@setHeight]="btnHeightActive ? 'show' : 'hide'" id="tab3" class="tab-slider--body" *ngSwitchCase="'tab3'">
+      <button class="orderType__contentContainer borderRadius d_flex__between d_flex__vertical">
+        <div class="orderType__contentContainerInner">
+          <span class="orderType__contentContainerInnerTitle z_3">{{'delivery' | lazytranslate}}</span>
+          <span class="orderType__contentContainerInnerDescription z_3">{{'deliveryForFront' | lazytranslate}}</span>
+        </div>
+        <div id="deliveryWrapper" class="orderType__nextStepContent">
+          <div>
+            <div class="feedback__emailSection feedback__emailSectionDropdown">
+              <div class="feedback__emailSectionCountyDropdown" (clickOutside)="closegroupContainer()">
+                <button class="login__countrySection inputBorderRadius" type="button" (click)="clicked()">
+                  <input (focus)="closeClick()" [(ngModel)]="checkoutPickUp.contryCode" class="feedback__selectionSectionSelected" disabled
+                    autofocus>
+                  <img class="feedback__selectionSectionBtn" src="assets/images/image/back-icon.svg">
+                </button>
+              </div>
+              <div class="feedback__emailSectionInputContainer inputBorderRadius z_3">
+                <input (focus)="closeClick()" required class="phoneNumber__input" type="number"
+                  placeholder="{{'basePhone' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                  [(ngModel)]="checkoutDelivery.phone"
+                  oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{25})|[^\d]/g, '');">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <nav id="loginMainNavigation" class="mainNavigation inputBorderRadius z_2"
+                [ngClass]="{'mainNavigationActive' : groupContainerState}">
+                <div class="burger__content">
+                  <ul *ngIf="countryCodes">
+                    <li id="countryCode" *ngFor="let country of countryCodes.data.countries.items"
+                      (click)="activeCode(country.callingCode[0])" class="burger__contentItems"><a><span class="">
+                          {{country.name.common}}</span><span>(+{{country.callingCode[0]}})</span></a></li>
+                  </ul>
+                </div>
+              </nav>
+            </div>
+            <div class="inputBorderRadius relative feedback__emailSection">
+              <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                placeholder="{{'name' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                [(ngModel)]="checkoutDelivery.name">
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div style="color: red">{{ 'required' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="inputBorderRadius relative feedback__emailSection">
+              <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                placeholder="{{'state' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                [(ngModel)]="checkoutDelivery.state">
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div style="color: red">{{ 'required' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="inputBorderRadius relative feedback__emailSection">
+              <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                placeholder="{{'city' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                [(ngModel)]="checkoutDelivery.city">
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div style="color: red">{{ 'required' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="inputBorderRadius relative feedback__emailSection">
+              <input (focus)="closeClick()" required class="deliveryForm inputBorderRadius" type="text" maxlength="50"
+                placeholder="{{'street' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                [(ngModel)]="checkoutDelivery.street">
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div style="color: red">{{ 'required' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="feedback__emailSection feedback__emailSectionDropdown">
+              <div class="feedback__emailSectionInputContainer inputBorderRadius z_3 d_flex__vertical">
+                <input (focus)="closeClick()" required class="phoneNumber__input forLeft" type="number"
+                  placeholder="{{'zipCode' | lazytranslate}}" (keyup)="checkInputValue('deliveryWrapper')"
+                  [(ngModel)]="checkoutDelivery.zipCode"
+                  oninput="this.value = this.value.replace(/^[+]?\d*[0-9]{5}([- /]?[0-9]{4})?$/g, '');">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="inputBorderRadius email-field-w relative feedback__emailSection">
+              <input (focus)="closeClick()" required #deliveryEmail class="deliveryForm inputBorderRadius" type="email" maxlength="50"
+                placeholder="{{'email' | lazytranslate}}"
+                (keyup)="checkInputValue('deliveryWrapper')" [(ngModel)]="checkoutDelivery.contactEmail" />
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div *ngIf="inputValue === '' && !this.mailValidate(deliveryEmail)" style="color: red">{{ 'required' | lazytranslate }}</div>
+                <div *ngIf="inputValue !== '' && !this.mailValidate(deliveryEmail)" style="color: red">{{ 'enterValidEmail' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="orderType__formDescription inputBorderRadius">
+              <textarea (focus)="closeClick()" class="orderType__formDescriptionTextarea" maxlength="200" placeholder="{{'specialinstractions' | lazytranslate}}"
+                [(ngModel)]="checkoutDelivery.note">
+                </textarea>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+
+    <!-- RESERVATION-MOBILE -->
+
+
+    <div [@setHeight]="btnHeightActive ? 'show' : 'hide'" id="tab4" class="tab-slider--body" *ngSwitchCase="'tab4'">
+      <button class="orderType__contentContainer borderRadius d_flex__between d_flex__vertical">
+        <div class="orderType__contentContainerInner">
+          <span class="orderType__contentContainerInnerTitle z_3">{{'reservation' | lazytranslate}}</span>
+          <span class="orderType__contentContainerInnerDescription z_3">{{'reservationForFront' | lazytranslate}}</span>
+        </div>
+        <div id="reservationWrapper" class="orderType__nextStepContent d_flex__vertical">
+          <div class="orderType__form d_flex__center">
+            <div class="feedback__emailSection feedback__emailSectionDropdown">
+              <div class="feedback__emailSectionCountyDropdown" (clickOutside)="closegroupContainer()">
+                <button type="button" class="login__countrySection inputBorderRadius" (click)="clicked()">
+                  <input (focus)="closeClick()" [(ngModel)]="checkoutReservation.contryCode" class="feedback__selectionSectionSelected"
+                    disabled autofocus>
+                  <img class="feedback__selectionSectionBtn" src="assets/images/image/back-icon.svg">
+                </button>
+              </div>
+              <div class="feedback__emailSectionInputContainer inputBorderRadius z_3">
+                <input (focus)="closeClick()" required type="number" class="phoneNumber__input"
+                  placeholder="{{'basePhone' | lazytranslate}}" (keyup)="checkInputValue('reservationWrapper')"
+                  [(ngModel)]="checkoutReservation.phone"
+                  oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{25})|[^\d]/g, '');">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+              <nav id="loginMainNavigation" class="mainNavigation inputBorderRadius z_2"
+                [ngClass]="{'mainNavigationActive' : groupContainerState}">
+                <div class="burger__content">
+                  <ul *ngIf="countryCodes">
+                    <li id="countryCode" *ngFor="let country of countryCodes.data.countries.items"
+                      (click)="activeCode(country.callingCode[0])" class="burger__contentItems"><a><span class="">
+                          {{country.name.common}}</span><span>(+{{country.callingCode[0]}})</span></a></li>
+                  </ul>
+                </div>
+              </nav>
+            </div>
+            <div class="inputBorderRadius relative feedback__emailSection">
+              <input (focus)="closeClick()" required type="text" class="deliveryForm inputBorderRadius" maxlength="50"
+                placeholder="{{'name' | lazytranslate}}" (keyup)="checkInputValue('reservationWrapper')"
+                [(ngModel)]="checkoutReservation.name">
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div style="color: red">{{ 'required' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="inputBorderRadius email-field-w relative feedback__emailSection">
+              <input (focus)="closeClick()"
+              required
+              #reservationEmail
+              class="deliveryForm inputBorderRadius" 
+              type="email"
+              maxlength="50"
+              placeholder="{{'email' | lazytranslate}}"
+              (keyup)="checkInputValue('reservationWrapper')"
+              [(ngModel)]="checkoutReservation.contactEmail"/>
+              <div class="invalid-feedback signUp__error phoneNumber">
+                <div *ngIf="inputValue === '' && !this.mailValidate(reservationEmail)" style="color: red">{{ 'required' | lazytranslate }}</div>
+                <div *ngIf="inputValue !== '' && !this.mailValidate(reservationEmail)" style="color: red">{{ 'enterValidEmail' | lazytranslate }}</div>
+              </div>
+            </div>
+            <div class="feedback__emailSection feedback__emailSectionDropdown">
+              <div class="feedback__emailSectionInputContainer inputBorderRadius d_flex__between d_flex__vertical">
+                <input (focus)="closeClick()" [min]="startAt" [max]="endAt" required readonly="readonley" class="phoneNumber__input forLeft" placeholder="{{'reservationDate' | lazytranslate}}" [owlDateTime]="dt1"
+                  [(ngModel)]="checkoutReservation.date" (ngModelChange)="checkInputValue('reservationWrapper')">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+                <span class="dateIcon" [owlDateTimeTrigger]="dt1"><i class="fa fa-calendar"></i></span>
+                <owl-date-time style="display: none" #dt1></owl-date-time>
+              </div>
+            </div>
+            <div class="feedback__emailSection feedback__emailSectionDropdown">
+              <div class="feedback__emailSectionInputContainer inputBorderRadius z_3 d_flex__vertical">
+                <input (focus)="closeClick()" required class="phoneNumber__input forLeft" type="number"
+                  placeholder="{{'countPeople' | lazytranslate}}" (keyup)="checkInputValue('reservationWrapper')"
+                  [(ngModel)]="checkoutReservation.guestCount"
+                  oninput="this.value = this.value.replace(/^0[0-9]+$|([0-9]{3})|[^\d]/g, '');">
+                <div class="invalid-feedback signUp__error phoneNumber">
+                  <div style="color: red">{{ 'required' | lazytranslate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="orderType__formDescription inputBorderRadius">
+              <textarea (focus)="closeClick()" class="orderType__formDescriptionTextarea" maxlength="200" placeholder="{{'specialinstractions' | lazytranslate}}"
+                [(ngModel)]="checkoutReservation.note">
+              </textarea>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+
+    <!-- UNIQUEQR-MOBILE -->
+
+
+    <div [@setHeight]="btnHeightActive ? 'show' : 'hide'" id="tab5" class="tab-slider--body" *ngSwitchCase="'tab5'">
+      <button class="orderType__contentContainer borderRadius d_flex__between d_flex__vertical">
+        <div class="orderType__contentContainerInner">
+          <span class="orderType__contentContainerInnerTitle z_3">{{'uniqueQR' | lazytranslate}}</span>
+          <span class="orderType__contentContainerInnerDescription z_3"></span>
+            <button class="qrBtn borderRadius" (click)="scanForMe('uniqueqr')">Scan for QR</button>
+        </div>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Unique QR Scanner -->
+  <!-- <button class="toggleWebCam" (click)="webCamToggle()">WebCam Toggle</button> -->
+<div class="qrBorder-w" [hidden]="!qrBorder">
+  <qr-scanner [canvasWidth]="320" [canvasHeight]="480" [stopAfterScan]="true" [updateTime]="500" facing="environment" class="bb"></qr-scanner>
+  <div class="qrBorder"></div>
+  <i (click)="webCamToggle()" class="fas fa-sync-alt"></i>
+</div>
+
+<!-- Modal for Active Order -->
+<div *ngIf="!scannerSupport" mdbModal id="clientModal" #clientModal="mdbModal" class="modal fade remove-modal" tabindex="-1" role="dialog" aria-labelledby="myClientModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header  p-3 ">
+        <button type="button" class="close"  (click)="clientModal.hide()" data-dismiss="modal" aria-label="Close">
+          <span (click)="qrBorder = false">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="p-2 modal-info">
+          <h2 class="text-center">{{'deviceNotSupport' | lazytranslate}}</h2>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center p-2"></div>
+    </div>
+  </div>
+  <button style="display: none" id="hidePopup" class="hidden"  (click)="clientModal.show()">clientModal</button>
+</div>
+
+
+  <!-- LOADER-MOBILE -->
+
+
+  <div class="orderType__passiveOverlayer" [ngClass]="{'orderType__passiveOverlayer--active': loader || payKey}"></div>
+  <div class="orderType__spinner spinner-1" [ngClass]="{'orderType__spinner--active': loader}"></div>
+
+
+  <!-- PAYSLIDE-MOBILE -->
+
+
+  <div *ngIf="paySlide" class="orderType__paySlide orderType__nextStep">
+    <div class="orderType__paySlideChooseWindow borderRadius d_flex__vertical" [ngClass]="{'singlePayMethod' : !(allowPayCash() && allowPayOnline())}">
+      <div class="orderType__Btn orderType__CloseBtn" (click)="closeClick()"title="modal_close_button">
+        <i class="fas fa-times"></i>
+      </div>
+      <div *ngIf="payClick" (click)="backClick()" class="orderType__Btn orderType__Btn--topLeft">
+        <i class="fas fa-arrow-alt-circle-left"></i>
+      </div>
+      <!-- <div *ngIf="payClick" (click)="backClick()" class="orderType__Btn orderType__Btn--topLeft">
+        <i class="fas fa-arrow-alt-circle-left"></i>
+      </div> -->
+      <div class="orderType__paySlideChooseWindowContent direction d_flex__center">
+        <div *ngIf="allowPayOnline()" (click)="payOnline()"
+          class="orderType__paySlideChooseWindowContentChild padding__b padding__t d_flex__center inputBorderRadius"
+          [ngClass]="{'singlePayWidth' : !allowPayOnline()}">
+
+          <!-- CREDIT CARD -->
+
+          <div  class="creditCard" [ngClass]="{'singlePayWidth' : !allowPayCash()}">
+            <div class="creditCard__part creditCard__front" [ngClass]="{'creditCard__front--active': payClick}">
+              <img class="creditCard__front-square creditCard__square"
+                src="../../../assets/images/card/little_square.png">
+              <img class="creditCard__front-logo creditCard__logo"
+                src="../../../assets/images/card/visa.png">
+              <p class="creditCard_numer">**** **** **** 6258</p>
+              <div class="creditCard__bottom">
+                <div class="creditCard__space-75">
+                  <span class="creditCard__label">card holder</span>
+                  <p class="creditCard__info">{{setCardHoldarName()}}</p>
+                </div>
+                <div class="creditCard__space-25">
+                  <span class="creditCard__label">Expires</span>
+                  <p class="creditCard__info">10/25</p>
+                </div>
+              </div>
+              <div class="creditCard__part--overlay d_flex__center" 
+              [ngClass]="{'creditCard__part--overlayActive': payOnlineTriggerClick && !payClick}">
+                <span class="creditCard__part--overlayText">{{'payOnline' | lazytranslate}}</span>
+                <span class="creditCard__part--overlaySuccessIcon d_flex__center" 
+                    [ngClass]="{'creditCard__part--overlaySuccessIcon--active' : payOnlineTriggerClick}">
+                    <i [ngClass]="{'SuccessIcon--active' : payOnlineTriggerClick}" class="fas fa-check"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="creditCard__part creditCard__back" [ngClass]="{'creditCard__back--active': payClick}">
+              <div class="creditCard__back-content">
+                <div *ngIf="payClick" class="orderType__paySlideChooseWindowContent d_flex">
+                  <span *ngFor="let paymentMethod of paymentMethods" class="orderType__paySlideItem d_flex__horizonal">
+                    <div *ngIf="paymentMethod.paymentReadModels.length > 1" class="orderType__paySlideItemInner">
+                      <div [hidden]="paymentMethod.paymentSystem === 'yandexcashbox'" class="orderType__payChekbox">
+                        <img class="orderType__payChekboxImg" src="{{paymentMethod.pictureUri}}">
+                        <p class="orderType__payChekboxText">{{paymentMethod.paymentSystem}}</p>
+                      </div>
+                      <div class="orderType__dropDownPayments d_flex orderType__dropDownPayments--center">
+                        <div *ngFor="let paymentReadModels of paymentMethod.paymentReadModels let y = index"
+                          [hidden]="paymentMethod.paymentReadModels.length < 2"
+                          class="orderType__payChekbox d_flex__vertical direction">
+                          <!-- <p class="orderType__payChekboxText">{{paymentReadModels.paymentMethod}}</p> -->
+                          <label class="orderType__payChekboxChild">
+                            <input (focus)="closeClick()" class="orderType__payChekboxImgCheckbox" name="payMethod" id="{{y}}" type="radio">
+                            <img class="orderType__payChekboxChildImg" src="{{paymentReadModels.pictureUri}}"
+                                (click)="chekedPaymMethod(paymentReadModels.paymentMethod, paymentMethod.paymentSystem)" />
+                            <i class="fas fa-check"></i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="paymentMethod.paymentReadModels.length <= 1" class="orderType__paySlideItemInner">
+                      <div class="orderType__dropDownPayments d_flex flexStart">
+                        <div *ngFor="let paymentReadModels of paymentMethod.paymentReadModels let i = index"
+                          class="orderType__payChekbox">
+                          <label class="orderType__payChekboxChild">
+                            <input (focus)="closeClick()" class="orderType__payChekboxImgCheckbox" name="payMethod" id="{{i}}" type="radio">
+                            <img class="orderType__payChekboxImg" src="{{paymentReadModels.pictureUri}}"
+                            (click)="chekedPaymMethod(paymentReadModels.paymentMethod, paymentMethod.paymentSystem)" />
+                            <i class="fas fa-check"></i>
+                          </label>
+                          <!-- <p class="orderType__payChekboxText">{{paymentMethod.paymentSystem | uppercase}}</p> -->
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- CREDIT CARD -->
+
+
+        <p *ngIf="allowPayCash() && allowPayOnline()" class="choosePay__arrow d_flex__center"><i class="fas fa-exchange-alt"></i></p>
+
+
+        <!-- CASH CARD -->
+
+
+        <div *ngIf="allowPayCash()" (click)="payCash()" class="orderType__paySlideChooseWindowContentChild d_flex__center inputBorderRadius"
+         [ngClass]="{'singlePayWidth' : !allowPayOnline(), 'padding__t--singlePay' : !(allowPayOnline() && allowPayCash())}">
+          <div class="creditCard">
+            <div class="creditCard__front creditCard__part">
+              <div class="creditCard__cashSection">
+                <div class="creditCard__cashInner d_flex__center">
+                  <span class="creditCard__cashCorner creditCard__cashCorner--leftTop"></span>
+                  <span class="creditCard__cashCorner creditCard__cashCorner--leftBottom"></span>
+                  <span class="creditCard__cashCorner creditCard__cashCorner--bottomRight"></span>
+                  <span class="creditCard__cashCorner creditCard__cashCorner--topRight"></span>
+                  <span class="creditCard__cashContent d_flex__center">
+                    <i class="fas fa-dollar-sign"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="creditCard__part--overlay d_flex__center"
+                  [ngClass]="{'creditCard__part--overlayActive': payCashTriggerClick && !payClick}">
+                <span class="creditCard__part--overlayText">{{'payCash' | lazytranslate}}</span>
+                <span 
+                    class="creditCard__part--overlaySuccessIcon d_flex__center" 
+                    [ngClass]="{'creditCard__part--overlaySuccessIcon--active' : payCashTriggerClick}">
+                    <i [ngClass]="{'SuccessIcon--active' : payCashTriggerClick}" class="fas fa-check"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- <div *ngIf="payKey" class="orderType__keyModal d_flex__center">
+    <span (click)="congradsModalClose()" class="orderType__CloseBtn">
+      <img src="assets/images/image/close-button-black.svg">
+    </span>
+    <div class="orderType__keyModalCongrads">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 461.6 480.76">
+          <style>
+            .C {
+              mix-blend-mode: multiply
+            }
+
+            .F {
+              stroke-linecap: round
+            }
+
+            .G {
+              stroke-width: 2
+            }
+
+            .H {
+              stroke-width: 1.27
+            }
+
+          </style>
+          <g fill="none" stroke="#59d3d3" stroke-linejoin="round">
+            <g class="G">
+              <path
+                d="M212.23 35.6l-38-32.3A9.34 9.34 0 0 0 164.07 2l-43.54 21.3A9.33 9.33 0 0 0 116 35.1l5.2 13.13.46 1.14 104.6-1.9zM195 38l-45.7-12.85a4.52 4.52 0 0 1-.43-8.56l18.86-7.4a4.52 4.52 0 0 1 4.52.73l32.34 26.74 7.3 6z" />
+              <path
+                d="M211.9 42.7L195 38l-45.7-12.85a4.52 4.52 0 0 1-.43-8.56l18.86-7.4a4.52 4.52 0 0 1 4.52.73l32.34 26.74z"
+                class="C" opacity=".16" />
+              <path
+                d="M337.46 21.5L293.17 1.8a9.26 9.26 0 0 0-10.05 1.63L232.7 49.46l104.6-1.88.05-.13 5.1-14.34a9.31 9.31 0 0 0-4.99-11.62zm-28.68 2.88l-61.92 19.8L285.28 10a4.54 4.54 0 0 1 4.51-.88l19.1 6.7a4.52 4.52 0 0 1-.12 8.55z" />
+              <path d="M308.78 24.37l-61.92 19.8L285.28 10a4.54 4.54 0 0 1 4.51-.88l19.1 6.7a4.52 4.52 0 0 1-.12 8.55z"
+                class="C" opacity=".16" />
+              <path
+                d="M375.74 99.75l-147.72 7.1-144.1-7 59.4-6.28v2.4l1.64-.85 4.07-2.13 17.75-1.8 5.9 1.93V90.6l54.4-5.5 64.37 6.35v8.1l14.68-4.8 14.67 7.66v-8.05l54.94 5.42z" />
+              <path
+                d="M84.58 99.86l-.66.06v-.08l.66.02zm58.74-50.88v44.58l-59.4 6.02V53.4l37.24-5.17.46 1.14 21.7-.4zm23.45 42.2l-17.74 1.8L158 88.3l8.78 2.87zm65.3-58.33v52.72l-4.98-.5-54.4 5.5v-42.1l53.56-.97-14-11.9 19.83-2.75z" />
+              <path
+                d="M232.7 49.46l58.76-1.05v43.02l-59.4-5.86V32.85l16.35 2.27-15.72 14.34zm147.5 3.94v46.52l-13.52-1.06-45.87-4.53V47.88l16.5-.3.05-.13 42.84 5.95z" />
+              <path
+                d="M320.8 47.88v54.5l-14.67-7.66-14.68 4.8V48.4l29.35-.53zm-148.13.58v44.46l-.5.03L158 88.3l-14.67 7.65V48.98l29.35-.52z" />
+              <path d="M172.67 92.92v.2l-.5-.16.5-.03zm58.53 175.14v39.22L87.03 283.9l-.87-.45 145.05-15.4z" />
+              <path d="M376.25 283.45l-.87.45-144.17 23.38v-39.22l145.04 15.4z" />
+              <path
+                d="M231.2 307.28v172.48l-72.37-28.03 7.68 2.9v-157.8l-29.35-4.77v151.27l-51-19.75V283.76l.87.14 144.18 23.38z" />
+              <path
+                d="M376.25 283.76v139.82L326.4 442.9V292.06l-29.35 4.77v157.43l-65.83 25.5V307.28l145.04-23.52zm-209.73 13.07v157.8l-7.68-2.9-21.67-8.4V292.06l29.35 4.77z" />
+              <path d="M326.4 292.06V442.9l-29.35 11.36V296.83l29.35-4.77z" />
+              <path d="M386.55 71.76a10 10 0 0 1 0 20m16 35a8 8 0 0 1 16 0m-19 46a7 7 0 0 1 0 14" class="F" />
+            </g>
+            <path d="M461.05,159.76a8.5,8.5,0,1,1,0-17" stroke-width="1.1" class="F" />
+            <path d="M417.05 231.76a6.5 6.5 0 1 1-6.5 6.5m19-44.5a14 14 0 1 1 28 0m-129-7a14 14 0 1 1 28 0"
+              class="G F" />
+            <path d="M402.67,274a13.94,13.94,0,1,1-4,27.59" class="F H" />
+            <text id="keyModal__textThanks" stroke="var(--mainColorOne)" fill="#59d3d3" x="" y="" 
+                class="orderType__keyModalCongrads--thanks">
+                thanks
+            </text> 
+            <text id="keyModal__textFor" stroke="var(--mainColorOne)" fill="#59d3d3" x="" y=""
+                class="orderType__keyModalCongrads--for">
+                for
+            </text>
+            <text id="keyModal__textOrder" stroke="var(--mainColorOne)" fill="#59d3d3" x="" y=""
+                class="orderType__keyModalCongrads--order">
+                order
+            </text>  
+            <path
+              d="M365.05 263.76a6.5 6.5 0 0 1 0 13m-290-205a10 10 0 0 0 0 20m-16 35a8 8 0 0 0-16 0m19 46a7 7 0 0 0 0 14"
+              class="G F" />
+            <path d="M.55,159.76a8.5,8.5,0,0,0,8.5-8.5,8.51,8.51,0,0,0-8.5-8.5" stroke-width="1.1" class="F" />
+            <path d="M44.55 231.76a6.5 6.5 0 1 0 6.5 6.5m-19-44.5a14 14 0 0 0-28 0m129-7a14 14 0 0 0-28 0"
+              class="G F" />
+            <path d="M58.93,274a13.94,13.94,0,1,0,4,27.59" class="F H" />
+            <path d="M96.55,263.76a6.5,6.5,0,0,0,0,13" class="F G" />
+          </g>
+        </svg>
+    </div>
+    <div class="d_flex orderType__keyModalMessage">
+      <h3 class="keyModal__success" id="keyModal__success">congratulations</h3>
+      <span class="orderType__keyModalOrderId d_flex__horizonal">Traking number</span>
+      <span class="orderType__keyModalKey borderRadius d_flex__horizonal">{{payKey.key}}</span>
+    </div>
+  </div> -->
